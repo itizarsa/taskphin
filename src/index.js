@@ -1,4 +1,5 @@
 import { loggerMiddleware } from "./logger/logger.middleware.js"
+import candidate from "./candidate/candidate.route.js"
 import { logger } from "./logger/logger.utils.js"
 import { PORT } from "./common/config.js"
 import { randomUUID } from "crypto"
@@ -14,6 +15,8 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }))
 app.use(rTracer.expressMiddleware({ requestIdFactory: () => randomUUID() }))
 
 app.use(loggerMiddleware)
+
+app.use("/candidates", candidate)
 
 app.all("*", (req, res) => {
 	return res.status(404).json({ message: `Cannot ${req.method} ${req.url}` })
