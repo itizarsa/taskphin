@@ -1,7 +1,7 @@
 import Joi from "joi"
 
-const bodyValidator = schema => (req, res, next) => {
-	const { error } = Joi.compile(schema).validate(req.body, { abortEarly: false })
+const validate = (schema, type) => (req, res, next) => {
+	const { error } = Joi.compile(schema).validate(req[type], { abortEarly: false })
 
 	if (error) {
 		const errorMessage = error.details.map(details => {
@@ -18,4 +18,4 @@ const bodyValidator = schema => (req, res, next) => {
 	return next()
 }
 
-export { bodyValidator }
+export { validate }
