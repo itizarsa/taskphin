@@ -11,20 +11,28 @@
 	"scripts": {
 		"start": "NODE_ENV=production node .",
 		"dev": "nodemon .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"drizzle:studio": "drizzle-kit studio --config=src/database/drizzle.config.js",
+		"drizzle:generate": "drizzle-kit generate:mysql --config=src/database/drizzle.config.js",
+		"drizzle:push": "drizzle-kit push:mysql --config=src/database/drizzle.config.js",
+		"drizzle:drop": "drizzle-kit drop --config=src/database/drizzle.config.js",
+		"drizzle:migrate": "node src/database/migrate.js"
 	},
 	"author": "Arshath H",
 	"license": "UNLICENSED",
 	"dependencies": {
 		"cls-rtracer": "^2.6.3",
 		"dotenv": "^16.4.1",
+		"drizzle-orm": "^0.29.3",
 		"envalid": "^8.0.0",
 		"express": "^4.18.2",
 		"joi": "^17.12.1",
+		"mysql2": "^3.9.1",
 		"node-cache": "^5.1.2",
 		"pino": "^8.18.0"
 	},
 	"devDependencies": {
+		"drizzle-kit": "^0.20.14",
 		"nodemon": "^3.0.3",
 		"pino-pretty": "^10.3.1",
 		"prettier": "^3.2.5"
