@@ -1,9 +1,9 @@
-import { env } from "../common/config.js"
+import { NODE_ENV } from "../common/config.js"
 import { cache } from "./logger.store.js"
 import rTracer from "cls-rtracer"
 import Pino from "pino"
 
-const isProd = env === "production"
+const isProd = NODE_ENV === "production"
 
 const transport = isProd ? undefined : { target: "pino-pretty" }
 

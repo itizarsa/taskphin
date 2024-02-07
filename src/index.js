@@ -1,6 +1,6 @@
 import { loggerMiddleware } from "./logger/logger.middleware.js"
 import { logger } from "./logger/logger.utils.js"
-import { port } from "./common/config.js"
+import { PORT } from "./common/config.js"
 import { randomUUID } from "crypto"
 import rTracer from "cls-rtracer"
 import express from "express"
@@ -19,8 +19,8 @@ app.all("*", (req, res) => {
 	return res.status(404).json({ message: `Cannot ${req.method} ${req.url}` })
 })
 
-app.listen(port, () => {
-	console.log(`App listening on ${port}`)
+app.listen(PORT, () => {
+	console.log(`App listening on ${PORT}`)
 })
 
 process.on("unhandledRejection", error => {

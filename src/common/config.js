@@ -1,5 +1,12 @@
-const port = process.env.PORT || 7777
+import "dotenv/config"
+import { cleanEnv, str, port, url } from "envalid"
 
-const env = process.env.NODE_ENV || "development"
+const env = cleanEnv(process.env, {
+	PORT: port({ default: 7777 }),
+	NODE_ENV: str({ choices: ["development", "production"], default: "development" }),
+	DATABASE_URL: url()
+})
 
-export { port, env }
+const { PORT, NODE_ENV, DATABASE_URL } = env
+
+export { PORT, NODE_ENV, DATABASE_URL }
