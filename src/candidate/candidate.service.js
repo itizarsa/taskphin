@@ -14,15 +14,13 @@ const findAll = async () => {
 }
 
 const find = async ({ params }) => {
-	const { id } = params
-
-	const query = db.select().from(candidates).where(eq(candidates.id, id))
+	const query = db.select().from(candidates).where(eq(candidates.id, params.id))
 
 	const { result, error } = await promiseWrapper(query)
 
 	if (error) return { status: 500, error }
 
-	return { status: 200, data: result }
+	return { status: 200, data: result[0] }
 }
 
 const create = async ({ body }) => {
@@ -61,4 +59,44 @@ const remove = async ({ params }) => {
 	return { status: 204, data: {} }
 }
 
-export { findAll, create, find, update, remove }
+const score = async ({ params }) => {
+	const criteria = {
+		"Node.js": [
+			{ yoe: 1, point: 1 },
+			{ yoe: 2, point: 2 },
+			{ yoe: Number.MAX_SAFE_INTEGER, point: 3 }
+		],
+		ReactJS: [
+			{ yoe: 0.9, point: 1 },
+			{ yoe: 2, point: 2 },
+			{ yoe: Number.MAX_SAFE_INTEGER, point: 3 }
+		]
+	}
+
+	const query = db
+		.select({ skills: candidates.skills })
+		.from(candidates)
+		.where(eq(candidates.id, params.id))
+
+	const { result, error } = await promiseWrapper(query)
+
+	if (error) return { status: 500, error }
+
+	const { skills } = result[0]
+
+	const totalScore = skills.reduce((total, skill) => {
+		const { name, yoe } = skill
+
+		const skillCriteria = criteria[name]
+
+		if (!skillCriteria) return total
+
+		const { point } = skillCriteria.find(({ yoe: criteriaYoe }) => yoe <= criteriaYoe)
+
+		return total + point
+	}, 0)
+
+	return { status: 200, data: { score: totalScore } }
+}
+
+export { findAll, create, find, update, remove, score }
