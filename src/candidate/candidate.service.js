@@ -78,7 +78,7 @@ const remove = async ({ params }) => {
 const score = async ({ params }) => {
 	const criteria = {
 		"Node.js": [
-			{ yoe: 1, point: 1 },
+			{ yoe: 0.9, point: 1 },
 			{ yoe: 2, point: 2 },
 			{ yoe: Number.MAX_SAFE_INTEGER, point: 3 }
 		],
