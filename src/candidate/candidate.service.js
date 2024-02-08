@@ -3,10 +3,14 @@ import { candidates } from "../database/schema.js"
 import { db } from "../database/database.js"
 import { eq } from "drizzle-orm"
 
-const findAll = async () => {
-	const query = db.select().from(candidates)
+const findAll = async ({ query }) => {
+	const { page, limit } = query
 
-	const { result, error } = await promiseWrapper(query)
+	const offset = (page - 1) * limit
+
+	const request = db.select().from(candidates).limit(limit).offset(offset)
+
+	const { result, error } = await promiseWrapper(request)
 
 	if (error) return { status: 500, error }
 
@@ -14,7 +18,7 @@ const findAll = async () => {
 }
 
 const find = async ({ params }) => {
-	const query = db.select().from(candidates).where(eq(candidates.id, params.id))
+	const query = db.select().from(candidates).where(eq(candidates.id, params.id)).limit(1)
 
 	const { result, error } = await promiseWrapper(query)
 
@@ -40,11 +44,17 @@ const create = async ({ body }) => {
 const update = async ({ params, body }) => {
 	const query = db.update(candidates).set(body).where(eq(candidates.id, params.id))
 
-	const { error } = await promiseWrapper(query)
+	const { result, error } = await promiseWrapper(query)
 
 	if (error) return { status: 500, error }
 
-	const message = `Candidate with id ${params.id} updated`
+	const isSuccess = result[0].affectedRows > 0
+
+	const msgSuffix = isSuccess ? "updated" : "not found"
+
+	const message = `Candidate with id ${params.id} ${msgSuffix}`
+
+	if (!isSuccess) return { status: 404, error: { message } }
 
 	return { status: 200, data: { message } }
 }
@@ -52,9 +62,15 @@ const update = async ({ params, body }) => {
 const remove = async ({ params }) => {
 	const query = db.delete(candidates).where(eq(candidates.id, params.id))
 
-	const { error } = await promiseWrapper(query)
+	const { result, error } = await promiseWrapper(query)
 
 	if (error) return { status: 500, error }
+
+	const isSuccess = result[0].affectedRows > 0
+
+	const message = `Candidate with id ${params.id} not found`
+
+	if (!isSuccess) return { status: 404, error: { message } }
 
 	return { status: 204, data: {} }
 }
@@ -77,10 +93,14 @@ const score = async ({ params }) => {
 		.select({ skills: candidates.skills })
 		.from(candidates)
 		.where(eq(candidates.id, params.id))
+		.limit(1)
 
 	const { result, error } = await promiseWrapper(query)
 
 	if (error) return { status: 500, error }
+
+	if (!result.length)
+		return { status: 404, error: { message: `Candidate with id ${params.id} not found` } }
 
 	const { skills } = result[0]
 

@@ -1,12 +1,12 @@
 import { findAll, find, create, update, remove, score } from "./candidate.service.js"
-import { idParamDto, createDto, updateDto } from "./candidate.dto.js"
+import { idParamDto, createDto, updateDto, paginationDto } from "./candidate.dto.js"
 import { validate } from "../validator/validator.middleware.js"
 import { wrapper } from "../common/controller.js"
 import express from "express"
 
 const router = express.Router()
 
-router.get("/", wrapper(findAll))
+router.get("/", validate(paginationDto, "query"), wrapper(findAll))
 
 router.get("/:id", validate(idParamDto, "params"), wrapper(find))
 

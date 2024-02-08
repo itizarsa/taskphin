@@ -1,6 +1,11 @@
 import { status } from "../database/schema.js"
 import Joi from "joi"
 
+const paginationDto = Joi.object({
+	page: Joi.number().min(0).default(1),
+	limit: Joi.number().min(0).max(25).default(25)
+})
+
 const idParamDto = Joi.object({
 	id: Joi.number().min(0).required()
 })
@@ -30,4 +35,4 @@ const updateDto = Joi.object({
 	skills: Joi.array().items(skill)
 })
 
-export { idParamDto, createDto, updateDto }
+export { paginationDto, idParamDto, createDto, updateDto }
