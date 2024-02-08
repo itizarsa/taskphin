@@ -38,3 +38,7 @@ drizzle:migrate   -  Apply generated SQL migration
 1. Run `drizzle:generate` to generate migrations
 
 2. Run `drizzle:migrate` to apply the migrations
+
+## API Documentation
+
+-   Postman Collection - [Taskphin](https://www.postman.com/arsadvc/workspace/taskphin/collection/29079331-f8bb64d1-092e-45c6-a16a-1f8ee5ba420e?action=share&creator=29079331)
